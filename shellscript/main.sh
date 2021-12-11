@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://cdn.jsdelivr.net/gh/Flygar/dotfiles@main/shellscript/env)
+source <(curl -fsSL https://raw.githubusercontent.com/Flygar/dotfiles/main/shellscript/env)
 set -euo pipefail
 
 # 升级&安装
