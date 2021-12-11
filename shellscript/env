@@ -23,13 +23,17 @@ function add1user() {
     local PASSWORD=$2
 
     # 新增用户并设置密码
-    sudo adduser ${USER} --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password && echo "${USER}:${PASSWORD}" | sudo chpasswd && sudo usermod -a -G sudo ${USER}
+    sudo adduser ${USER} --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
+    # 修改密码
+    echo "${USER}:${PASSWORD}" | sudo chpasswd
+    # 添加到sudo组
+    sudo usermod -a -G sudo ${USER}
 }
 
 # 为指定用户配置免密使用sudo命令
 function visudo() {
     local USER=$1
-    echo "${USER}	ALL=(ALL:ALL) NOPASSWD:ALL" | sudo EDITOR='tee -a' visudo
+    (echo "${USER}	ALL=(ALL:ALL) NOPASSWD:ALL" | sudo EDITOR='tee -a' visudo ) >/dev/null 2>&1
 }
 
 # 等待任务完成

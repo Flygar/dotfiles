@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
-set -euxo pipefail
-
-# 获取变量
 # https://github.com/Flygar/dotfiles/blob/main/shellscript/env
 source <(curl -fsSL https://cdn.jsdelivr.net/gh/Flygar/dotfiles@main/shellscript/env)
+set -euo pipefail
 
 # 安装docker
 # 参考官网相应操作系统的安装方式: https://docs.docker.com/engine/install/debian/
@@ -13,7 +11,7 @@ function install_docker() {
         echo "Install the latest stable release of Docker on Linux"
         curl -fsSL https://get.docker.com -o- | sudo sh
     else
-        echo -e "${COLOR_SUCC}Docker CE already installed${COLOR_NONE}"
+        printf "${COLOR_SUCC}Docker CE already installed${COLOR_NONE}\n"
     fi
 }
 
@@ -23,17 +21,12 @@ function install_docker() {
 function post_install() {
     # 判断用户是否存在，用户不存在则新建用户
     local USER=$1
-    local PASSWORD=$2
-
-    # 新增用户并设置默认密码
-    sudo adduser ${USER} --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password || echo -e "${COLOR_SUCC}User '${USER}' already exists${COLOR_NONE}"
-    echo "${USER}:${PASSWORD}" | sudo chpasswd
 
     # 新增docker用户组
-    sudo groupadd docker >/dev/null 2>&1 || echo -e "${COLOR_SUCC}Group 'docker' already exists${COLOR_NONE}"
+    sudo groupadd docker >/dev/null 2>&1 || printf "${COLOR_SUCC}group 'docker' already exists${COLOR_NONE}\n"
 
     # 把用户添加到docker组内
-    sudo usermod -aG docker $USER
+    sudo usermod -aG docker $USER 
     newgrp docker
 
     # TODO 跟随系统启动 debian系统不用动，已经设置好了
@@ -47,7 +40,8 @@ function post_install() {
 
 function main() {
     install_docker
-    post_install law foobar
+    # post_install ${USER}
+    post_install law
 }
 
 main
