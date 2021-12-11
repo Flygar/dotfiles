@@ -34,6 +34,7 @@ function sshd_config_replace() {
     local file_path='/etc/ssh/sshd_config'
     local line_conf=$(cat ${file_path} | grep ${text} | grep -E 'yes|no')
     local new_line_conf=$1
+    echo "new_line_conf=${new_line_conf}"
 
     sudo sed -i "s/${line_conf}/${new_line_conf}/g" ${file_path}
 }
