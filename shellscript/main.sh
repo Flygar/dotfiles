@@ -84,8 +84,8 @@ function ufw() {
 }
 
 function restart_sshd() {
-    # sudo systemctl reload ssh.service
-    sudo systemctl restart ssh.service
+    sudo systemctl reload ssh.service
+    # sudo systemctl restart ssh.service
 }
 
 function init() {
