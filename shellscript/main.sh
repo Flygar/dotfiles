@@ -180,5 +180,5 @@ function main() {
 
 main
 
-# bash <(curl -fsSL https://cdn.jsdelivr.net/gh/Flygar/dotfiles@main/shellscript/main.sh)
-# bash -c "$(wget -q -O- https://cdn.jsdelivr.net/gh/Flygar/dotfiles@main/shellscript/main.sh)"
+# bash <(curl -fsSL https://raw.githubusercontent.com/Flygar/dotfiles/main/shellscript/main.sh)
+# bash -c "$(wget -q -O- https://raw.githubusercontent.com/Flygar/dotfiles/main/shellscript/main.sh)"
