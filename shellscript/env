@@ -26,6 +26,8 @@ function add1user() {
     sudo adduser ${USER} --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
     # 修改密码
     (echo "${USER}:${PASSWORD}" | sudo chpasswd) || exit 1
+    
+    echo "pwdd: ${PASSWORD}"
     # 添加到sudo组
     sudo usermod -a -G sudo ${USER}
 }
