@@ -162,7 +162,7 @@ function main() {
     
     echo "pwt: ${NEW_USER_PASSWD}"
     
-    NEW_USER_PASSWD=$(echo ${NEW_USER_PASSWD} ｜ sed 's/\$/\\$/g')
+    NEW_USER_PASSWD=$(echo ${NEW_USER_PASSWD} | sed 's/\$/\\$/g')
 
     # 添加新用户
     wait4done "add1user "${NEW_USER}" ${NEW_USER_PASSWD}" "${COLOR_SUCC}>>>adduser ${NEW_USER}${COLOR_NONE}"
