@@ -40,7 +40,7 @@ function visudo() {
 function wait4done() {
     local cmd=$1
     local msg='Processing'
-    local result='/tmp/result/result.file'
+    local result="/tmp/$(whoami)/result.file"
     if [ -n "$2" ];then
         msg=$2
     fi
@@ -48,7 +48,7 @@ function wait4done() {
     # To be safe, ensure that the cursor is turned back on when
     # the script terminates, for whatever reason.
     trap 'tput cnorm' EXIT
-    (eval ${cmd} && mkdir -p '/tmp/result/' && touch $result) &
+    (eval ${cmd} && mkdir -p "/tmp/$(whoami)" && touch $result) &
     while :; do
     for c in '>  ' '>> ' '>>>'; do
         printf "\r${msg}%s" "$c"
