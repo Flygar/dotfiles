@@ -17,7 +17,7 @@ function install_zsh() {
 # 2. 安装ohmyzsh
 function install_ohmyzsh() {
     # https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
-    sh -c "$(wget -q -O- https://cdn.jsdelivr.net/gh/ohmyzsh/ohmyzsh@master/tools/install.sh)" || echo "hello"
+    sh -c "$(wget -q -O- https://cdn.jsdelivr.net/gh/ohmyzsh/ohmyzsh@master/tools/install.sh)" || echo "failed"
 
 }
 
@@ -61,8 +61,8 @@ function config() {
 }
 
 function main() {
-#     install_zsh
-#     install_ohmyzsh
+    install_zsh
+    install_ohmyzsh
     config
 }
 
