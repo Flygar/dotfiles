@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # https://github.com/Flygar/dotfiles/blob/main/shellscript/env
 source <(curl -fsSL https://raw.githubusercontent.com/Flygar/dotfiles/main/shellscript/env)
-set -euxo pipefail
+set -euo pipefail
 
 
 # 1. 判断是否安装了zsh
