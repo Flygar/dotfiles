@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 COLOR_ERROR="$(tput setaf 124)"
 COLOR_SUCC="$(tput setaf 34)"
@@ -22,7 +23,7 @@ function add1user() {
     local PASSWORD=$2
 
     # 新增用户并设置密码
-    sudo adduser ${USER} --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password || echo -e "${COLOR_SUCC}User '${USER}' already exists${COLOR_NONE}"
+    sudo adduser ${USER} --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
     echo "${USER}:${PASSWORD}" | sudo chpasswd
 
     # 将新用户添加到sudo组
@@ -55,6 +56,6 @@ function wait4done() {
         sleep .5
     done
     done
-    printf " done\n"
+    printf "done\n"
     tput cnorm # Show cursor again.
 }

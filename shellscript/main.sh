@@ -20,7 +20,7 @@ function update_ssh_port() {
     local current_port_num=${current_port#* }
     if [ $(echo ${current_port} | wc -l) -ne 1 ] || [ "${current_port_num}" != "22" ];then
         printf "${COLOR_ERROR}Current port not 22 or multiple ports${COLOR_NONE}\n"
-        return 2
+        exit 1
     fi
     local new_port="Port $1"
 
@@ -162,13 +162,13 @@ function main() {
     wait4done "update_ssh_port "${NEW_PORT}"" "${COLOR_SUCC}>>>update_ssh_port${COLOR_NONE}" && restart_sshd
 
     # 添加新用户
-    wait4done "add1user "${NEW_USER}" "${NEW_USER_PASSWD}"  >/dev/null 2>&1 " "${COLOR_SUCC}>>>adduser ${NEW_USER}${COLOR_NONE}"
+    wait4done "add1user "${NEW_USER}" "${NEW_USER_PASSWD}"" "${COLOR_SUCC}>>>adduser ${NEW_USER}${COLOR_NONE}"
 
     # 为新用户授权免密使用sudo命令
-    wait4done "visudo "${NEW_USER}"  >/dev/null 2>&1 " "${COLOR_SUCC}>>>visudo${COLOR_NONE}" 
+    wait4done "visudo "${NEW_USER}"  " "${COLOR_SUCC}>>>visudo${COLOR_NONE}" 
 
     # 禁止使用root用户登陆vps
-    wait4done "sshd_config_replace 'PermitRootLogin no'  >/dev/null 2>&1 " "${COLOR_SUCC}>>>sshd_config_replace${COLOR_NONE}" 
+    wait4done "sshd_config_replace 'PermitRootLogin no'   " "${COLOR_SUCC}>>>sshd_config_replace${COLOR_NONE}" 
 
     # 禁止使用密码认证的方式登陆vps
     # 带用户指令，不能用 wait4done
