@@ -23,11 +23,7 @@ function add1user() {
     local PASSWORD=$2
 
     # 新增用户并设置密码
-    sudo adduser ${USER} --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
-    echo "${USER}:${PASSWORD}" | sudo chpasswd
-
-    # 将新用户添加到sudo组
-    sudo usermod -a -G sudo ${USER}
+    sudo adduser ${USER} --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password && echo "${USER}:${PASSWORD}" | sudo chpasswd && sudo usermod -a -G sudo ${USER}
 }
 
 # 为指定用户配置免密使用sudo命令
