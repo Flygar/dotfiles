@@ -2,9 +2,8 @@
 set -euxo pipefail
 
 # 获取变量
-# https://raw.githubusercontent.com/Flygar/dotfiles/master/shellscript/env
-source <(curl -fsSL https://cdn.jsdelivr.net/gh/Flygar/dotfiles@master/shellscript/env)
-
+# https://github.com/Flygar/dotfiles/blob/main/shellscript/env
+source <(curl -fsSL https://cdn.jsdelivr.net/gh/Flygar/dotfiles@main/shellscript/env)
 
 # 安装docker
 # 参考官网相应操作系统的安装方式: https://docs.docker.com/engine/install/debian/

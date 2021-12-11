@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://cdn.jsdelivr.net/gh/Flygar/dotfiles@master/shellscript/env)
-set -euxo pipefail
+source <(curl -fsSL https://cdn.jsdelivr.net/gh/Flygar/dotfiles@main/shellscript/env)
+set -euo pipefail
 
 # 升级&安装
 function install() {
@@ -19,7 +19,7 @@ function update_ssh_port() {
     local current_port=$(cat /etc/ssh/sshd_config | grep ^Port)
     local current_port_num=${current_port#* }
     if [ $(echo ${current_port} | wc -l) -ne 1 ] || [ "${current_port_num}" != "22" ];then
-        echo -e "${COLOR_ERROR}Multiple ports or not port 22${COLOR_NONE}"
+        printf "${COLOR_ERROR}Current port not 22 or multiple ports${COLOR_NONE}\n"
         return 2
     fi
     local new_port="Port $1"
@@ -40,35 +40,31 @@ function sshd_config_replace() {
 
 # 只允许用户使用密钥的方式登陆
 function authentication() {
-    local PORT=998
-    local RSA_PATH=~/.ssh/rsa
-    local USERNAME=law
-    local IP_address=111
+    local rsa_path='${LOCAL_RSA_PATH}'
+    local ip4=$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)
+    local ip6=$(/sbin/ip -o -6 addr list eth0 | awk '{print $4}' | cut -d/ -f1)
 
-    # clear
+    printf "\n"
+    printf "${COLOR_SUCC}>>>Set No PasswordAuthentication<<<${COLOR_NONE}\n"
+    printf "${COLOR_NOTICE_BACKGROUND}Attention[1]:${COLOR_NONE}\nIf your local vps don't have an SSH key, you must generate a new SSH key to use for authentication.Paste the text below to create a new SSH key:\n\tssh-keygen -t rsa -b 4096 -C "your_email@example.com" -f ${rsa_path}\n"
+    printf "${COLOR_NOTICE_BACKGROUND}Attention[2]:${COLOR_NONE}\nMake sure you have uploaded your local SSH key to the vps. You can run the following command to upload the local SSH key to the server:\n\tssh-copy-id -p ${NEW_PORT} -i ${rsa_path} ${NEW_USER}@${ip4}\n"
 
     while :
         do  
-            printf "Set no PasswordAuthentication\n\n"
-
-            printf "If you don't already have an SSH key, you must generate a new SSH key to use for authentication.Paste the text below to create a new SSH key:\n\tssh-keygen -t rsa -b 4096 -C "your_email@example.com" -f ~/.ssh/ww_rsa\n"
-
-            printf "${COLOR_NOTICE_BACKGROUND}Attention:${COLOR_NONE}\nMake sure you have uploaded your local SSH key to the server. You can run the following command to upload the local SSH key to the server:\n\tssh-copy-id -p ${PORT} -i ${RSA_PATH} ${USERNAME}@${IP_address}\n"
-
-            read -p "If SSH key has been uploaded to the vps, Press '(y/n)' to continue: " key
+            read -p "If SSH key has been uploaded to the vps, Press '[Y/n]' to continue: " key
             case ${key} in
                 [yY] | [yY][Ee][Ss] )     
-                    echo "hello world"
+                    wait4done "sshd_config_replace 'PasswordAuthentication no'  >/dev/null 2>&1 " "${COLOR_SUCC}>>>sshd_config_replace${COLOR_NONE}"
+                    break
                     ;;
-                [nN] | [nN][oO] )     
-                    # break
+                [nN] | [nN][oO] )
                     return 0
                     ;;
                 [qQ] )
                     exit 1
                     ;;
                 * )
-                    printf "${COLOR_ERROR}Incorrect key, please try again${COLOR_NONE}\n"
+                    printf "${COLOR_ERROR}Incorrect Key! Please Try Again.${COLOR_NONE}\n"
                     # printf "Press any key to continue..."
                     # read -n 1
                     # clear
@@ -78,6 +74,7 @@ function authentication() {
 
 }
 
+# TODO 开启防火墙
 function ufw() {
     # 变更的端口
     # 新建的用户名：去除首位空格
@@ -85,7 +82,10 @@ function ufw() {
 
 }
 
-
+function restart_sshd() {
+    # sudo systemctl reload ssh.service
+    sudo systemctl restart ssh.service
+}
 
 function init() {
     while :
@@ -107,9 +107,10 @@ function init() {
             # 是否存在新用户
             if [ ${NEW_USER} = "root" ] ; then
                 printf "${COLOR_ERROR}USER ${NEW_USER} is not allowed.${COLOR_NONE}\n"
-            else
-                break
             fi
+            read -s -p "Create a password for「 ${NEW_USER} 」: " NEW_USER_PASSWD
+            printf "\n"
+            break
         done 
 
 }
@@ -117,16 +118,16 @@ function init() {
 function check() {
     while :
         do  
-            printf "\nInformation:\n"
+            printf "\n${COLOR_SUCC}>>>Information Check<<<${COLOR_NONE}\n"
             printf "Change SSH port(22) to: ${NEW_PORT}\n" 
-            printf "User name to be configured: ${NEW_USER}\n"  
-            read -p "${COLOR_NOTICE}Press '(y/n)' to confirm: ${COLOR_NONE}" key
+            printf "User name to be configured:「 ${NEW_USER} | ${NEW_USER_PASSWD} 」\n"
+            read -p "${COLOR_NOTICE}Is the information correct? [Y/n]: ${COLOR_NONE}" key
             case ${key} in
                 [yY] | [yY][Ee][Ss] )     
                     return 0
                     ;;
                 [nN] | [nN][oO] )   
-                    echo ">>>"  
+                    printf "\n"
                     init
                     ;;
                 [qQ] )
@@ -144,41 +145,35 @@ function check() {
 
 }
 
+# main
 function main() {
-    #TODO debian系统下默认没sudo命令，需要提前安装下
-    install "vim sudo zsh git nmap ufw curl netcat"
+    init && check
 
-    # 个人配置
-    actions
+    # TODO sudo命令在debian下没有，需要提前用root用户安装下
+    # 安装自定义软件
+    install "sudo vim zsh git nmap ufw curl netcat"
 
-    # 修改ssh登陆端口为998
-    update_ssh_port "998"
+    # 用户配置
+    wait4done "personal_config" "${COLOR_SUCC}>>>personal_config${NEW_USER}${COLOR_NONE}"
+
+    # 更改ssh登陆端口
+    wait4done "update_ssh_port "${NEW_PORT}"" "${COLOR_SUCC}>>>update_ssh_port${NEW_USER}${COLOR_NONE}" && restart_sshd
 
     # 添加新用户
-    add1user "law" "foobar"
-    # 设置用户执行sudo命令免密
-    visudo "law"
+    wait4done "add1user "${NEW_USER}" "${NEW_USER_PASSWD}"  >/dev/null 2>&1 " "${COLOR_SUCC}>>>adduser ${NEW_USER}${COLOR_NONE}"
 
-    # 禁止使用root用户登陆服务器
-    sshd_config_replace 'PermitRootLogin no'
+    # 为新用户授权免密使用sudo命令
+    wait4done "visudo "${NEW_USER}"  >/dev/null 2>&1 " "${COLOR_SUCC}>>>visudo${COLOR_NONE}" 
 
-    # 禁止通过输入密码的方式登陆服务器。
-    authentication
-    sshd_config_replace 'PasswordAuthentication no'
+    # 禁止使用root用户登陆vps
+    wait4done "sshd_config_replace "PermitRootLogin no"  >/dev/null 2>&1 " "${COLOR_SUCC}>>>sshd_config_replace${COLOR_NONE}" 
 
-
-
-    # 重启ssh服务加载新配置
-    restart_sshd
+    # 禁止使用密码认证的方式登陆vps
+    # 带用户指令，不能用 wait4done
+    authentication && restart_sshd
 }
 
-# test
-function test() {
-    init && check
-    install "vim sudo zsh git nmap ufw curl netcat"
-}
-
-test
+main
 
 # bash <(curl -fsSL https://cdn.jsdelivr.net/gh/Flygar/dotfiles@master/shellscript/main.sh)
 # bash -c "$(wget -O- https://cdn.jsdelivr.net/gh/Flygar/dotfiles@master/shellscript/main.sh)"

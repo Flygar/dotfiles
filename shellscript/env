@@ -49,11 +49,12 @@ function wait4done() {
     trap 'tput cnorm' EXIT
     (eval ${cmd} && mkdir -p '/tmp/result/' && touch $result) &
     while :; do
-    for c in '.  ' '.. ' '...'; do
+    for c in '>  ' '>> ' '>>>'; do
         printf "\r${msg}%s" "$c"
         [ -f $result ] && rm -f $result && { printf '\n'; break 2; }
         sleep .5
     done
     done
+    printf " done\n"
     tput cnorm # Show cursor again.
 }
