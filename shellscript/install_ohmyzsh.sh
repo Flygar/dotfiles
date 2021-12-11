@@ -61,8 +61,8 @@ function config() {
 }
 
 function main() {
-    install_zsh
-    install_ohmyzsh
+#     install_zsh
+#     install_ohmyzsh
     config
 }
 
