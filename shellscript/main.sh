@@ -163,7 +163,7 @@ function main() {
     echo "pwd: ${NEW_USER_PASSWD}"
 
     # 添加新用户
-    wait4done "add1user "${NEW_USER}" "${NEW_USER_PASSWD}"" "${COLOR_SUCC}>>>adduser ${NEW_USER}${COLOR_NONE}"
+    wait4done "add1user "${NEW_USER}" ${NEW_USER_PASSWD}" "${COLOR_SUCC}>>>adduser ${NEW_USER}${COLOR_NONE}"
 
     # 为新用户授权免密使用sudo命令
     wait4done "visudo "${NEW_USER}"" "${COLOR_SUCC}>>>visudo${COLOR_NONE}" 
