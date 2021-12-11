@@ -58,7 +58,8 @@ function authentication() {
                     break
                     ;;
                 [nN] | [nN][oO] )
-                    return 0
+                    exit 1
+                    # return 0
                     ;;
                 [qQ] )
                     exit 1
@@ -154,10 +155,10 @@ function main() {
     install "sudo vim zsh git nmap ufw curl netcat"
 
     # 用户配置
-    wait4done "personal_config" "${COLOR_SUCC}>>>personal_config${NEW_USER}${COLOR_NONE}"
+    wait4done "personal_config" "${COLOR_SUCC}>>>personal_config${COLOR_NONE}"
 
     # 更改ssh登陆端口
-    wait4done "update_ssh_port "${NEW_PORT}"" "${COLOR_SUCC}>>>update_ssh_port${NEW_USER}${COLOR_NONE}" && restart_sshd
+    wait4done "update_ssh_port "${NEW_PORT}"" "${COLOR_SUCC}>>>update_ssh_port${COLOR_NONE}" && restart_sshd
 
     # 添加新用户
     wait4done "add1user "${NEW_USER}" "${NEW_USER_PASSWD}"  >/dev/null 2>&1 " "${COLOR_SUCC}>>>adduser ${NEW_USER}${COLOR_NONE}"
@@ -166,7 +167,7 @@ function main() {
     wait4done "visudo "${NEW_USER}"  >/dev/null 2>&1 " "${COLOR_SUCC}>>>visudo${COLOR_NONE}" 
 
     # 禁止使用root用户登陆vps
-    wait4done "sshd_config_replace "PermitRootLogin no"  >/dev/null 2>&1 " "${COLOR_SUCC}>>>sshd_config_replace${COLOR_NONE}" 
+    wait4done "sshd_config_replace 'PermitRootLogin no'  >/dev/null 2>&1 " "${COLOR_SUCC}>>>sshd_config_replace${COLOR_NONE}" 
 
     # 禁止使用密码认证的方式登陆vps
     # 带用户指令，不能用 wait4done
@@ -175,5 +176,5 @@ function main() {
 
 main
 
-# bash <(curl -fsSL https://cdn.jsdelivr.net/gh/Flygar/dotfiles@master/shellscript/main.sh)
-# bash -c "$(wget -O- https://cdn.jsdelivr.net/gh/Flygar/dotfiles@master/shellscript/main.sh)"
+# bash <(curl -fsSL https://cdn.jsdelivr.net/gh/Flygar/dotfiles@main/shellscript/main.sh)
+# bash -c "$(wget -q -O- https://cdn.jsdelivr.net/gh/Flygar/dotfiles@main/shellscript/main.sh)"
