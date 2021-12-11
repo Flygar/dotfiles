@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 source <(curl -fsSL https://raw.githubusercontent.com/Flygar/dotfiles/main/shellscript/env)
-set -euo pipefail
+set -euxo pipefail
 
 # 升级&安装
 function install() {
