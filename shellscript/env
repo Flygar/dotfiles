@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+COLOR_ERROR="$(tput setaf 124)"
+COLOR_SUCC="$(tput setaf 34)"
+COLOR_NOTICE="$(tput setaf 130)"
+# BOLD=$(printf '\033[1m')
+
+# background
+COLOR_ERROR_BACKGROUND="$(tput setab 124)"
+COLOR_SUCC_BACKGROUND="$(tput setab 34)"
+COLOR_NOTICE_BACKGROUND="$(tput setab 130)"
+COLOR_NONE="$(tput sgr0)"
+
+function personal_config() {
+    # 更改编辑器为vim
+    sudo update-alternatives --set editor /usr/bin/vim.basic
+}
+
+function add1user() {
+    # 判断用户是否存在，用户不存在则新建用户
+    local USER=$1
+    local PASSWORD=$2
+
+    # 新增用户并设置密码
+    sudo adduser ${USER} --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password || echo -e "${COLOR_SUCC}User '${USER}' already exists${COLOR_NONE}"
+    echo "${USER}:${PASSWORD}" | sudo chpasswd
+
+    # 将新用户添加到sudo组
+    sudo usermod -a -G sudo ${USER}
+}
+
+# 为指定用户配置免密使用sudo命令
+function visudo() {
+    local USER=$1
+    echo "${USER}	ALL=(ALL:ALL) NOPASSWD:ALL" | sudo EDITOR='tee -a' visudo
+}
+
+# 等待任务完成
+function wait4done() {
+    local cmd=$1
+    local msg='Processing'
+    local result='/tmp/result/result.file'
+    if [ -n "$2" ];then
+        msg=$2
+    fi
+    tput civis # Hide cursor.
+    # To be safe, ensure that the cursor is turned back on when
+    # the script terminates, for whatever reason.
+    trap 'tput cnorm' EXIT
+    (eval ${cmd} && mkdir -p '/tmp/result/' && touch $result) &
+    while :; do
+    for c in '.  ' '.. ' '...'; do
+        printf "\r${msg}%s" "$c"
+        [ -f $result ] && rm -f $result && { printf '\n'; break 2; }
+        sleep .5
+    done
+    done
+    tput cnorm # Show cursor again.
+}
