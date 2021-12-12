@@ -23,7 +23,7 @@ function post_install() {
     local USER=$1
 
     # 新增docker用户组
-    sudo groupadd docker >/dev/null 2>&1 || printf "${COLOR_SUCC}group 'docker' already exists${COLOR_NONE}\n"
+#     sudo groupadd docker || printf "${COLOR_SUCC}group 'docker' already exists${COLOR_NONE}\n"
 
     # 把用户添加到docker组内
     sudo usermod -aG docker $USER 
