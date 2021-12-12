@@ -77,7 +77,7 @@ function authentication() {
 
 # TODO 开启防火墙
 function ufw() {
-    sudo ufw enable
+    echo "y" | sudo ufw enable
     sudo ufw allow ${NEW_PORT}
     # 新建的用户名：去除首位空格
     echo "ufw enable"
