@@ -46,3 +46,5 @@ function main() {
 }
 
 main
+
+# bash <(curl -fsSL https://raw.githubusercontent.com/Flygar/dotfiles/main/shellscript/install_docker.sh)
