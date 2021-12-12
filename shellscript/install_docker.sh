@@ -40,7 +40,6 @@ function post_install() {
 
 function main() {
     install_docker
-    # post_install ${USER}
     post_install law
 }
 
