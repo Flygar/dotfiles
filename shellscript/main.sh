@@ -160,14 +160,8 @@ function main() {
     # 更改ssh登陆端口
     wait4done "update_ssh_port "${NEW_PORT}"" "${COLOR_SUCC}>>>update_ssh_port${COLOR_NONE}" && restart_sshd
     
-    echo "pwt: ${NEW_USER_PASSWD}"
-    
-    NEW_USER_PASSWD=$(echo ${NEW_USER_PASSWD} | sed 's/\$/\\$/g')
-    
-    echo "pwtt: ${NEW_USER_PASSWD}"
-
     # 添加新用户
-    wait4done "add1user "${NEW_USER}" ${NEW_USER_PASSWD}" "${COLOR_SUCC}>>>adduser ${NEW_USER}${COLOR_NONE}"
+    wait4done "add1user "${NEW_USER}" '${NEW_USER_PASSWD}'" "${COLOR_SUCC}>>>adduser ${NEW_USER}${COLOR_NONE}"
 
     # 为新用户授权免密使用sudo命令
     wait4done "visudo "${NEW_USER}"" "${COLOR_SUCC}>>>visudo${COLOR_NONE}" 
