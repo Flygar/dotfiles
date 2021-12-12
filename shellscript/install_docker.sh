@@ -36,6 +36,8 @@ function post_install() {
     # systemctl list-units --type=service --state=running
     # systemctl list-unit-files --type=service --state=enabled
     # systemctl list-unit-files --type=service --state=disabled
+    
+    echo "docker ready"
 }
 
 function main() {
