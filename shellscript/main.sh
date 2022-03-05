@@ -181,5 +181,5 @@ function main() {
 
 main
 
-# bash <(curl -fsSL https://raw.githubusercontent.com/Flygar/dotfiles/main/shellscript/main.sh)
-# bash -c "$(wget -q -O- https://raw.githubusercontent.com/Flygar/dotfiles/main/shellscript/main.sh)"
+# apt install sudo curl && bash <(curl -fsSL https://raw.githubusercontent.com/Flygar/dotfiles/main/shellscript/main.sh)
+# apt install sudo curl && bash -c "$(wget -q -O- https://raw.githubusercontent.com/Flygar/dotfiles/main/shellscript/main.sh)"
