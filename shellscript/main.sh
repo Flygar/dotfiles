@@ -177,6 +177,10 @@ function main() {
     # docker
 
     # ohmyzsh
+    
+    # Tips: Increasing the kernel buffer size can significantly improve the UDP performance.( for Snell v3.0.0)
+    sudo sysctl -w net.core.rmem_max=26214400
+    sudo sysctl -w net.core.rmem_default=26214400
 }
 
 main
