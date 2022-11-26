@@ -153,7 +153,7 @@ function main() {
 
     # TODO sudo命令在debian下没有，需要提前用root用户安装下
     # 安装自定义软件
-    install "sudo vim zsh git nmap ufw curl netcat"
+    install "sudo vim zsh git nmap ufw curl netcat batcat"
 
     # 用户配置
     wait4done "personal_config" "${COLOR_SUCC}>>>personal_config${COLOR_NONE}"
@@ -187,3 +187,5 @@ main
 
 # apt install -y sudo curl && bash <(curl -fsSL https://raw.githubusercontent.com/Flygar/dotfiles/main/shellscript/main.sh)
 # apt install -y sudo curl && bash -c "$(wget -q -O- https://raw.githubusercontent.com/Flygar/dotfiles/main/shellscript/main.sh)"
+# 试运行：DRY_RUN=1 sudo sh ./get-docker.sh
+# jsdelivr cdn内容刷新：将cdn换成purge
